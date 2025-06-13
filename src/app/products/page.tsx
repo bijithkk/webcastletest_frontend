@@ -1,6 +1,7 @@
 "use client";
 
 import AddButton from "@/components/buttons/AddButton";
+import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
 import ProductItem from "@/components/ProductItem";
 import Title from "@/components/Title";
@@ -33,7 +34,7 @@ export default function ProductList() {
     return () => clearTimeout(timer);
   }, [products, initialLoading]);
 
-  if (initialLoading) return <div className="text-center py-8">Loading...</div>;
+  if (initialLoading) return <Loading/>;
   if (error)
     return <div className="text-center py-8 text-red-500">{error}</div>;
 
