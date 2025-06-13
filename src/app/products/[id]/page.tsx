@@ -14,7 +14,6 @@ interface Product {
   price: number
   category: string
   image: string
-  // Add any additional fields you need
 }
 
 export default function ProductPage() {
@@ -43,7 +42,7 @@ export default function ProductPage() {
   }, [id])
 
   const handleBack = () => {
-    router.back() // Go back to previous route
+    router.back() 
   }
 
   if (loading) return <div className="text-center py-8">Loading...</div>
@@ -51,9 +50,6 @@ export default function ProductPage() {
   if (!product) return <div className="text-center py-8">Product not found</div>
 
   return (
-    // <div className="min-h-screen flex items-center justify-center px-4 py-8">
-    //   <ProductDetail product={product} /> 
-    // </div>
     <div className="min-h-screen px-4 py-8">
       {/* Back button */}
       <button 
