@@ -34,6 +34,7 @@ interface ProductContextType {
   fetchProducts: () => Promise<void>
   deleteProduct: (id: string) => Promise<void>
   updateFilter: (key: keyof Filters, value: string) => void
+  fetchCategories: () => Promise<void>
 }
 
 
@@ -78,13 +79,20 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  // const updateFilter = (key: keyof Filters, value: string) => {
+  //   setFilters(prev => ({
+  //     ...prev,
+  //     [key]: value
+  //   }))
+  // }
   const updateFilter = (key: keyof Filters, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }))
-    // No need to call fetchProducts here - useEffect will handle it
-  }
+  setFilters(prev => {
+    // Only update if value actually changed
+    if (prev[key] === value) return prev;
+    return { ...prev, [key]: value };
+  });
+  // Don't call fetchProducts here - the useEffect will handle it
+};
 
   const fetchCategories = async () => {
     try {
@@ -98,7 +106,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const deleteProduct = async (id: string) => {
     try {
       await axios.delete(`http://localhost:3002/api/v1/product/delete/${id}`)
-      await fetchProducts() // Refresh the list after deletion
+      await fetchProducts() 
+      await fetchCategories()
     } catch (err) {
       setError('Failed to delete product')
       console.error(err)
@@ -124,7 +133,8 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         filters,
         fetchProducts,
         deleteProduct,
-        updateFilter
+        updateFilter,
+        fetchCategories
       }}
     >
       {children}
