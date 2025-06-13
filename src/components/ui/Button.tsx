@@ -12,6 +12,7 @@ interface ButtonProps {
   disabled?: boolean;
   className?: string;
   icon?: ReactNode;
+  type?: "button" | "submit" | "reset";
 }
 
 export default function Button({
@@ -23,6 +24,7 @@ export default function Button({
   disabled = false,
   className = "",
   icon,
+  type = "button",
 }: ButtonProps) {
   const baseStyles = "rounded-lg font-medium transition-all flex items-center justify-center gap-2";
   const sizeStyles = {
@@ -50,7 +52,7 @@ export default function Button({
   }
 
   return (
-    <button onClick={onClick} disabled={disabled} className={classes}>
+    <button onClick={onClick} disabled={disabled} className={classes} type={type}>
       {icon && <span>{icon}</span>}
       {children}
     </button>

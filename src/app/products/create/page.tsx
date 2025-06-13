@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { useProducts } from "@/context/ProductContext";
+import Button from "@/components/ui/Button";
+import SubmitButton from "@/components/buttons/SubmitButton";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -262,23 +264,15 @@ export default function NewProductPage() {
         </div>
 
         <div className="flex justify-end space-x-4">
-          <button
-            type="button"
+          <Button
             onClick={() => router.push("/products")}
             className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-blue-700 ${
-
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {loading ? "Creating..." : "Create Product"}
-          </button>
+          </Button>
+          <SubmitButton>
+            Create
+          </SubmitButton>
         </div>
       </form>
     </div>
