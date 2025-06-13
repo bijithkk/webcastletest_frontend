@@ -6,12 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ConfirmDialog from "../ConfirmDialog";
+import EditButton from "../buttons/EditButton";
+import DeleteButton from "../buttons/DeleteButton";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
   const { deleteProduct } = useProducts();
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -25,15 +27,14 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div className="max-w-4xl">
-      <div></div>
       {/* Confirmation Dialog */}
-      <ConfirmDialog
+      {/* <ConfirmDialog
         isOpen={showConfirmDialog}
         title="Delete Product"
         message="Are you sure you want to delete this product? This action cannot be undone."
         onConfirm={handleDelete}
         onCancel={() => setShowConfirmDialog(false)}
-      />
+      /> */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
         {/* Product Image */}
         <div className="bg-gray-100 rounded-lg overflow-hidden">
@@ -56,7 +57,9 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
 
           <div className="flex space-x-4">
-            <Link
+            <EditButton href={`/products/edit/${product._id}`} />
+            <DeleteButton onDelete={handleDelete} isLoading={isDeleting} />
+            {/* <Link
               href={`/products/edit/${product._id}`}
               className="border border-black px-6 py-3 rounded-lg hover:bg-gray-100 transition"
             >
@@ -78,11 +81,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                   Deleting...
                 </span>
               ) : 'Delete'}
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
-
     </div>
   );
 }
