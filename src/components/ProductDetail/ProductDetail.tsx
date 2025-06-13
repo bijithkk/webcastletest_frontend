@@ -24,7 +24,8 @@ export default function ProductDetail({ product }: { product: Product }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl">
+      <div></div>
       {/* Confirmation Dialog */}
       <ConfirmDialog
         isOpen={showConfirmDialog}
@@ -33,11 +34,11 @@ export default function ProductDetail({ product }: { product: Product }) {
         onConfirm={handleDelete}
         onCancel={() => setShowConfirmDialog(false)}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
         {/* Product Image */}
         <div className="bg-gray-100 rounded-lg overflow-hidden">
           <img
-            src={product.image || "/placeholder-product.jpg"}
+            src={product.image}
             alt={product.title}
             className="w-full h-auto object-cover"
           />
@@ -46,12 +47,12 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Product Info */}
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-          <p className="text-gray-600 mb-4 capitalize">{product.category}</p>
+          <p className="text-gray-500 mb-4 capitalize">{product.category}</p>
           <p className="text-2xl font-semibold mb-6">${product.price}</p>
 
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-2">Description</h2>
-            <p className="text-gray-700">{product.description}</p>
+            <p className="text-gray-500">{product.description}</p>
           </div>
 
           <div className="flex space-x-4">
@@ -59,7 +60,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               href={`/products/edit/${product._id}`}
               className="border border-black px-6 py-3 rounded-lg hover:bg-gray-100 transition"
             >
-              Edit Product
+              Edit
             </Link>
             <button 
               onClick={() => setShowConfirmDialog(true)}
@@ -81,6 +82,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         </div>
       </div>
+
     </div>
   );
 }

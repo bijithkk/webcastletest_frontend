@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from "@/context/ProductContext";
 import Navbar from "@/components/Navbar";
+import { outfit, poppins, prata } from '@/utils/fonts';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -25,11 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${outfit.variable} ${poppins.variable} ${prata.variable}`}>
       <body>
         <ProductProvider>
-          <Navbar/>
-          <main className="container mx-auto px-4 py-8">
+          {/* <Navbar/> */}
+          <main className="container mx-auto px-4 py-4">
             {children}
           </main>
         </ProductProvider>
