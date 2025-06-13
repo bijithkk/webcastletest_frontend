@@ -1,8 +1,6 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import Pagination from "@/components/Pagination";
-import ProductFilters from "@/components/ProductFilters";
 import ProductItem from "@/components/ProductItem";
 import Title from "@/components/Title";
 import { useProducts } from "@/context/ProductContext";
@@ -26,10 +24,6 @@ export default function ProductList() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterLoading, setIsFilterLoading] = useState(false);
 
-  // useEffect(() => {
-  //   updateFilter("category", selectedCategories.join(","));
-  // }, [selectedCategories]);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsFilterLoading(false);
@@ -44,14 +38,7 @@ export default function ProductList() {
 
   return (
     <div className="flex flex-col">
-      {/* <Navbar /> */}
       <div className="flex flex-col sm:flex-row gap-1 sm:gap-10">
-        {/* Filter Options */}
-        {/* <ProductFilters
-          categories={categories}
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-        /> */}
 
         {/* Right side */}
         <div className="flex-1">
@@ -66,56 +53,6 @@ export default function ProductList() {
               <FaPlus />
             </Link>
           </div>
-
-          {/* Active filters display */}
-          {/* {(filters.search || filters.category) && (
-            <div className="mb-4 flex flex-wrap gap-2 items-center">
-              {filters.search && (
-                <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                  Search: "{filters.search}"
-                  <button
-                    onClick={() => updateFilter("search", "")}
-                    className="ml-2 text-gray-500 hover:text-black"
-                  >
-                    ×
-                  </button>
-                </span>
-              )}
-              {filters.category &&
-                filters.category.split(",").map((cat) => (
-                  <span
-                    key={cat}
-                    className="bg-gray-100 px-3 py-1 rounded-full text-sm capitalize"
-                  >
-                    {cat.toLowerCase()}
-                    <button
-                      onClick={() => {
-                        const newCats = selectedCategories.filter(
-                          (c) => c !== cat
-                        );
-                        setSelectedCategories(newCats);
-                        updateFilter("category", newCats.join(","));
-                      }}
-                      className="ml-2 text-gray-500 hover:text-black"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              {(filters.search || filters.category) && (
-                <button
-                  onClick={() => {
-                    updateFilter("search", "");
-                    updateFilter("category", "");
-                    setSelectedCategories([]);
-                  }}
-                  className="text-sm text-gray-500 hover:text-black ml-2"
-                >
-                  Clear all
-                </button>
-              )}
-            </div>
-          )} */}
 
           {/* Products grid with loading state */}
         <div className="relative">
@@ -148,7 +85,6 @@ export default function ProductList() {
                   onClick={() => {
                     updateFilter("search", "");
                     updateFilter("category", "");
-                    // setSelectedCategories([]);
                   }}
                   className="mt-2 text-sm text-blue-500 hover:text-blue-700"
                 >

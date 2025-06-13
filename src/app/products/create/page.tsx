@@ -1,4 +1,3 @@
-// src/app/products/create/page.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -19,6 +18,48 @@ export default function NewProductPage() {
     image: "",
   });
   const [file, setFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState({
+    title: "",
+    price: "",
+    image: "",
+  });
+
+  // Validation function
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      title: "",
+      price: "",
+      image: "",
+    };
+
+    // Title validation
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    }
+
+    // Price validation
+    if (!formData.price) {
+      newErrors.price = "Price is required";
+      isValid = false;
+    } else if (isNaN(Number(formData.price))) {
+      newErrors.price = "Price must be a number";
+      isValid = false;
+    } else if (Number(formData.price) <= 0) {
+      newErrors.price = "Price must be greater than 0";
+      isValid = false;
+    }
+
+    // Image validation (either URL or file)
+    if (!formData.image && !file) {
+      newErrors.image = "Please upload an image or provide an image URL";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -30,10 +71,20 @@ export default function NewProductPage() {
       ...prev,
       [name]: name === "price" ? parseFloat(value) || 0 : value,
     }));
+
+    // Clear error when user types
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     try {
       const form = new FormData();
@@ -63,6 +114,15 @@ export default function NewProductPage() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
+      // Validate file type
+      if (!selectedFile.type.match("image.*")) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Please upload an image file (JPEG, PNG, etc.)",
+        }));
+        return;
+      }
+
       setFile(selectedFile); // Store file for form submission
 
       const reader = new FileReader();
@@ -80,6 +140,12 @@ export default function NewProductPage() {
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">New Product</h1>
 
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label
@@ -94,11 +160,16 @@ export default function NewProductPage() {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+            className={`mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border ${
+              errors.title ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.title && (
+            <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+          )}
         </div>
 
+        {/* Description Field */}
         <div>
           <label
             htmlFor="description"
@@ -116,6 +187,7 @@ export default function NewProductPage() {
           />
         </div>
 
+        {/* Price Field */}
         <div>
           <label
             htmlFor="price"
@@ -129,11 +201,16 @@ export default function NewProductPage() {
             name="price"
             value={formData.price}
             onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+            className={`mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border ${
+              errors.price ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.price && (
+            <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+          )}
         </div>
 
+        {/* Category Field */}
         <div>
           <label
             htmlFor="category"
@@ -151,6 +228,7 @@ export default function NewProductPage() {
           />
         </div>
 
+        {/* Image Field */}
         <div>
           <label
             htmlFor="image"
@@ -164,8 +242,13 @@ export default function NewProductPage() {
             name="image"
             accept="image/*"
             onChange={handleImageUpload}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+            className={`mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border ${
+              errors.image ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.image && (
+            <p className="mt-1 text-sm text-red-600">{errors.image}</p>
+          )}
 
           {formData.image && (
             <div className="mt-2">

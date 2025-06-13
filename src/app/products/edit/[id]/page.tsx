@@ -20,8 +20,15 @@ export default function EditProductPage() {
     category: "",
     image: "",
   });
-  const { fetchProducts, fetchCategories } = useProducts();
+  const { updateProduct } = useProducts();
   const [file, setFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState({
+    title: "",
+    price: "",
+    image: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -48,17 +55,39 @@ export default function EditProductPage() {
     fetchProduct();
   }, [id]);
 
-  // const handleChange = (
-  //   e: React.ChangeEvent<
-  //     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  //   >
-  // ) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: name === "price" ? parseFloat(value) || 0 : value,
-  //   }));
-  // };
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      title: "",
+      price: "",
+      image: "",
+    };
+
+    // Title validation
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    }
+
+    // Price validation
+    if (isNaN(formData.price)) {
+      newErrors.price = "Price must be a number";
+      isValid = false;
+    } else if (formData.price <= 0) {
+      newErrors.price = "Price must be greater than 0";
+      isValid = false;
+    }
+
+    // Image validation (if new file is being uploaded)
+    if (!formData.image && !file) {
+      newErrors.image = "Image is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -69,6 +98,19 @@ export default function EditProductPage() {
     // Check if file input
     if (name === "image" && files && files.length > 0) {
       const file = files[0];
+
+      // Validate file type
+      if (!file.type.match("image.*")) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Please upload a valid image file (JPEG, PNG, etc.)",
+        }));
+        return;
+      }
+
+      setFile(file);
+      setErrors((prev) => ({ ...prev, image: "" }));
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
@@ -82,6 +124,11 @@ export default function EditProductPage() {
         ...prev,
         [name]: name === "price" ? parseFloat(value) || 0 : value,
       }));
+
+      // Clear error when user types
+      if (errors[name as keyof typeof errors]) {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      }
     }
   };
 
@@ -102,6 +149,12 @@ export default function EditProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setSubmitting(true);
     try {
       const form = new FormData();
       form.append("title", formData.title);
@@ -110,23 +163,22 @@ export default function EditProductPage() {
       form.append("category", formData.category);
       if (file) form.append("image", file);
 
-      await axios.patch(
-        `http://localhost:3002/api/v1/product/update/${id}`,
-        form,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      await fetchProducts();
-      await fetchCategories();
+      await updateProduct(id, form);
       router.push("/products");
       router.refresh(); // Refresh the page to see updated data
     } catch (err) {
       setError("Failed to update product");
       console.error(err);
+    } finally {
+      setSubmitting(false);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({ ...prev, image: "" }));
+    setFile(null);
+    // Set error immediately when image is removed
+    setErrors((prev) => ({ ...prev, image: "Image is required" }));
   };
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
@@ -138,6 +190,12 @@ export default function EditProductPage() {
   return (
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
+
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -153,9 +211,13 @@ export default function EditProductPage() {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+            className={`mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border ${
+              errors.title ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.title && (
+            <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+          )}
         </div>
 
         <div>
@@ -183,16 +245,18 @@ export default function EditProductPage() {
             Price *
           </label>
           <input
-            type="number"
+            type="text"
             id="price"
             name="price"
             value={formData.price}
             onChange={handleChange}
-            required
-            min="0"
-            step="0.01"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+            className={`mt-1 block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border ${
+              errors.price ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {errors.price && (
+            <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+          )}
         </div>
 
         <div>
@@ -228,10 +292,7 @@ export default function EditProductPage() {
               />
               <button
                 type="button"
-                onClick={() => {
-                  setFormData((prev) => ({ ...prev, image: "" }));
-                  setFile(null); // clear file too
-                }}
+                onClick={handleRemoveImage}
                 className="absolute -top-2 -right-2 bg-white rounded-full text-red-500 hover:text-red-700"
                 title="Remove image"
               >
@@ -239,6 +300,7 @@ export default function EditProductPage() {
               </button>
             </div>
           ) : (
+            <>
             <input
               type="file"
               id="image"
@@ -248,6 +310,10 @@ export default function EditProductPage() {
               // placeholder="Enter image URL"
               className="mt-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
             />
+            {errors.image && (
+                <p className="mt-1 text-sm text-red-600">{errors.image}</p>
+              )}
+              </>
           )}
         </div>
 
@@ -261,7 +327,10 @@ export default function EditProductPage() {
           </button>
           <button
             type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-600"
+            disabled={submitting}
+            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-600 ${
+              submitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             Update
           </button>
