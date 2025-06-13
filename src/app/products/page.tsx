@@ -1,5 +1,6 @@
 "use client";
 
+import AddButton from "@/components/buttons/AddButton";
 import Pagination from "@/components/Pagination";
 import ProductItem from "@/components/ProductItem";
 import Title from "@/components/Title";
@@ -45,13 +46,7 @@ export default function ProductList() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-base md:text-2xl gap-2 md:gap-0 mb-4">
             <Title text1={`ALL`} text2={`COLLECTIONS`} />
 
-            <Link
-              href="/products/create"
-              className="flex items-center gap-2 bg-black text-white font-light px-4 py-2 mt-4 text-sm rounded-xl"
-            >
-              ADD
-              <FaPlus />
-            </Link>
+            <AddButton href="/products/create" />
           </div>
 
           {/* Products grid with loading state */}
