@@ -81,7 +81,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       setPagination(response.data.pagination);
       setError(null);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     } finally {
       setLoading(false);
     }
