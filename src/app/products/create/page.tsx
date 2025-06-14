@@ -12,7 +12,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const { fetchProducts, fetchCategories } = useProducts();
   const [formData, setFormData] = useState({
     title: "",
@@ -90,7 +90,7 @@ export default function NewProductPage() {
     }
 
     setLoading(true);
-    setError("");
+    // setError("");
     setIsSuccess(false);
 
     try {
@@ -101,11 +101,15 @@ export default function NewProductPage() {
       form.append("category", formData.category);
       if (file) form.append("image", file);
 
-      await axios.post("http://localhost:3002/api/v1/product/add", form, {
+      const response = await axios.post("http://localhost:3002/api/v1/product/add", form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      if (!response.data.success) {
+        setError(true)
+      }
       
       setIsSuccess(true);
       setLoading(false);
@@ -117,8 +121,8 @@ export default function NewProductPage() {
         router.refresh();
       }, 1000);
     } catch (err) {
-      setError("Failed to create product");
-      console.error(err);
+      const error = err instanceof Error ? err : new Error("Failed to create product")
+      throw error
     } finally {
       setLoading(false);
     }
@@ -149,18 +153,14 @@ export default function NewProductPage() {
     }
   };
 
+  if (error) throw new Error('Failed to create product')
+
   return (
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">New Product</h1>
 
       {/* Show loading/success overlay */}
        <ProductLoading isLoading={loading} isSuccess={isSuccess} />
-
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>

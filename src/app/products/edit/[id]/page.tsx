@@ -14,7 +14,6 @@ export default function EditProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,7 +21,7 @@ export default function EditProductPage() {
     category: "",
     image: "",
   });
-  const { updateProduct } = useProducts();
+  const { updateProduct,error } = useProducts();
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState({
     title: "",
@@ -155,7 +154,6 @@ export default function EditProductPage() {
     }
 
     setLoading(true);
-    setError("");
     setIsSuccess(false);
     try {
       const form = new FormData();
@@ -174,7 +172,7 @@ export default function EditProductPage() {
         router.refresh();
       }, 2000);
     } catch (err) {
-      setError("Failed to update product");
+      
       console.error(err);
       setIsSuccess(false);
     } finally {
@@ -191,11 +189,9 @@ export default function EditProductPage() {
     setErrors((prev) => ({ ...prev, image: "Image is required" }));
   };
 
-  // if (loading) return <div className="text-center py-8">Loading...</div>;
-  if (error)
-    return <div className="text-center py-8 text-red-500">{error}</div>;
-  if (!product)
-    return <div className="text-center py-8">Product not found</div>;
+  if (error) throw new Error('Failed to edit product')
+  
+  if (!product) throw new Error('Failed to fetch product')
 
   return (
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">
@@ -204,11 +200,6 @@ export default function EditProductPage() {
       {/* Show loading/success overlay */}
       <ProductLoading isLoading={loading} isSuccess={isSuccess} />
 
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>

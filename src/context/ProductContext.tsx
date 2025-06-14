@@ -81,7 +81,6 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       setPagination(response.data.pagination);
       setError(null);
     } catch (err) {
-      setError("Failed to fetch products");
       console.error(err);
     } finally {
       setLoading(false);
@@ -113,7 +112,6 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       await fetchProducts();
       await fetchCategories();
     } catch (err) {
-      setError("Failed to delete product");
       console.error(err);
     }
   };
@@ -126,6 +124,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       await fetchProducts();
       await fetchCategories();
     } catch (err) {
+      setError("Failed to edit product");
       throw err; 
     }
   };
