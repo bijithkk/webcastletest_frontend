@@ -1,37 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Product Management Dashboard
+
+![Project Screenshot](/screenshot.png) <!-- Add a screenshot if available -->
+
+A modern product management dashboard built with Next.js, TypeScript, and Tailwind CSS, featuring CRUD operations, filtering, and pagination.
+
+## Features
+
+- 📋 **Product Listing** with pagination
+- 🔍 **Advanced Filtering** by categories and search
+- ➕ **Add New Products** with image upload
+- ✏️ **Edit Existing Products**
+- 🗑️ **Delete Products** with confirmation dialog
+- 📱 **Responsive Design** for all screen sizes
+- ⚡ **Optimized Performance** with client-side caching
+
+## Technologies Used
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **State Management**: React Context API
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
+- Node.js v18+
+- npm or yarn
+- API server running (update API base URL in context)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/product-management-dashboard.git
+   cd product-management-dashboard
+
+Install dependencies: 
+npm install
 # or
-yarn dev
+yarn install
+
+Set up environment variables: cp .env.example .env.local 
+
+Run the development server: npm run dev
 # or
-pnpm dev
-# or
-bun dev
-```
+yarn dev 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser. 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Project Structure :- 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+/product-management-dashboard
+├── app/
+│   ├── products/               # Product routes
+│   │   ├── [id]/               # Dynamic product detail pages
+│   │   ├── create/             # Product creation page
+│   │   └── page.tsx            # Product listing page
+├── components/
+│   ├── buttons/                # Reusable button components
+│   ├── ProductDetail/          # Product detail components
+│   ├── ProductFilters/         # Filter components
+│   ├── ProductItem/            # Product card component
+│   └── ui/                     # UI primitives
+├── context/                    # Global state management
+├── hooks/                      # Custom hooks
+├── public/                     # Static assets
+└── types/                      # TypeScript type definitions
 
-## Learn More
+Available Scripts :- 
+dev: Runs the development server
 
-To learn more about Next.js, take a look at the following resources:
+build: Creates an optimized production build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+start: Starts the production server
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+lint: Runs ESLint
 
-## Deploy on Vercel
+format: Formats code with Prettier
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+API InteAPI Integration ;- 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# webcastletest_frontend
+GET    /api/v1/product/get              - List all products
+GET    /api/v1/product/get/:id          - Get single product
+POST   /api/v1/product/add              - Create new product
+PATCH  /api/v1/product/update/:id       - Update product
+DELETE /api/v1/product/delete/:id       - Delete product
+GET    /api/v1/product/categories       - Get all categories
+
