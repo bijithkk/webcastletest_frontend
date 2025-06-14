@@ -1,16 +1,20 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState,use  } from "react";
 import axios from "axios";
 import { Product, useProducts } from "@/context/ProductContext";
 import { IoIosCloseCircle } from "react-icons/io";
 import ProductLoading from "./ProductLoading";
 
-export default function EditProductPage() {
-  const params = useParams();
+interface PageParams {
+  id: string;
+}
+
+export default function EditProductPage({ params }: { params: Promise<PageParams> }) {
+  // const params = useParams();
   const router = useRouter();
-  const id = params.id;
+  const { id } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -191,7 +195,7 @@ export default function EditProductPage() {
 
   if (error) throw new Error('Failed to edit product')
   
-  if (!product) throw new Error('Failed to fetch product')
+  // if (!product) throw new Error('Failed to fetch product')
 
   return (
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">

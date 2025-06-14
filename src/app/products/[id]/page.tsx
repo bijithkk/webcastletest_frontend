@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ProductDetail from '@/components/ProductDetail/ProductDetail'
 import { FaChevronLeft } from "react-icons/fa";
+import Loading from '@/components/Loading'
 
 interface Product {
   _id: string
@@ -47,7 +48,7 @@ export default function ProductPage() {
     router.back() 
   }
 
-  if (loading) return <div className="text-center py-8">Loading...</div>
+  if (loading) return <Loading/>
   if (!product) throw new Error('Product data not available')
 
   return (
