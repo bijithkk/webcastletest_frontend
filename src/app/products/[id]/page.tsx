@@ -22,17 +22,19 @@ export default function ProductPage() {
   const id = params.id
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  // const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`http://localhost:3002/api/v1/product/get/${id}`)
-        console.log("single product :- ",response.data)
+        if (!response.data.product) {
+          throw new Error('Product not found') // Will be caught by error boundary
+        }
         setProduct(response.data.product)
       } catch (err) {
-        setError('Failed to fetch product')
-        console.error(err)
+        const error = err instanceof Error ? err : new Error('Failed to fetch product')
+        throw error 
       } finally {
         setLoading(false)
       }
@@ -46,8 +48,7 @@ export default function ProductPage() {
   }
 
   if (loading) return <div className="text-center py-8">Loading...</div>
-  if (error) return <div className="text-center py-8 text-red-500">{error}</div>
-  if (!product) return <div className="text-center py-8">Product not found</div>
+  if (!product) throw new Error('Product data not available')
 
   return (
     <div className="min-h-screen px-4 py-8">

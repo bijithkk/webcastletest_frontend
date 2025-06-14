@@ -23,7 +23,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   return (
     <div className="max-w-4xl">
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-5">
         {/* Product Image */}
         <div className="bg-gray-100 rounded-lg overflow-hidden">
           <img
