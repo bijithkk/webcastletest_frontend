@@ -67,7 +67,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       console.log("filters", filters);
       const response = await axios.get(
-        "http://localhost:3002/api/v1/product/get",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/get`,
         {
           params: {
             page,
@@ -98,7 +98,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3002/api/v1/product/categories"
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/categories`
       );
       setCategories(response.data);
     } catch (err) {
@@ -108,7 +108,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteProduct = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:3002/api/v1/product/delete/${id}`);
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/delete/${id}`);
       await fetchProducts();
       await fetchCategories();
     } catch (err) {
@@ -118,7 +118,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
 
   const updateProduct = async (id: string, formData: FormData) => {
     try {
-      await axios.patch(`http://localhost:3002/api/v1/product/update/${id}`, formData, {
+      await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       await fetchProducts();

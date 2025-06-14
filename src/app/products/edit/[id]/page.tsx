@@ -33,7 +33,7 @@ export default function EditProductPage() {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3002/api/v1/product/get/${id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/get/${id}`
         );
         setProduct(response.data.product);
         setFormData({
