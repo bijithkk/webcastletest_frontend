@@ -3,9 +3,11 @@
 
 import Button from "@/components/ui/Button";
 
-export default function SubmitButton({ 
+export default function SubmitButton({
+  loading, 
   children = "Submit"
-}: { 
+}: {
+  loading: boolean; 
   children?: React.ReactNode;
 }) {
   return (
@@ -13,6 +15,7 @@ export default function SubmitButton({
       type="submit"
       variant="primary"
       size="md"
+      disabled={loading}
     >
       {children}
     </Button>

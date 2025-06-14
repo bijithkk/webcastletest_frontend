@@ -6,10 +6,12 @@ import axios from "axios";
 import { useProducts } from "@/context/ProductContext";
 import Button from "@/components/ui/Button";
 import SubmitButton from "@/components/buttons/SubmitButton";
+import ProductLoading from "./ProductLoading";
 
 export default function NewProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
   const { fetchProducts, fetchCategories } = useProducts();
   const [formData, setFormData] = useState({
@@ -88,6 +90,9 @@ export default function NewProductPage() {
     }
 
     setLoading(true);
+    setError("");
+    setIsSuccess(false);
+
     try {
       const form = new FormData();
       form.append("title", formData.title);
@@ -101,10 +106,16 @@ export default function NewProductPage() {
           "Content-Type": "multipart/form-data",
         },
       });
+      
+      setIsSuccess(true);
+      setLoading(false);
       await fetchProducts();
       await fetchCategories();
-      router.push("/products");
-      router.refresh();
+
+      setTimeout(() => {
+        router.push("/products");
+        router.refresh();
+      }, 1000);
     } catch (err) {
       setError("Failed to create product");
       console.error(err);
@@ -141,6 +152,9 @@ export default function NewProductPage() {
   return (
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">New Product</h1>
+
+      {/* Show loading/success overlay */}
+       <ProductLoading isLoading={loading} isSuccess={isSuccess} />
 
       {error && (
         <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
@@ -270,7 +284,7 @@ export default function NewProductPage() {
           >
             Cancel
           </Button>
-          <SubmitButton>
+          <SubmitButton loading={loading}>
             Create
           </SubmitButton>
         </div>

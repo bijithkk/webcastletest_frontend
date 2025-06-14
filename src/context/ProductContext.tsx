@@ -147,7 +147,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
         error,
         pagination,
         filters,
-        fetchProducts,
+        fetchProducts,  
         deleteProduct,
         updateFilter,
         fetchCategories,

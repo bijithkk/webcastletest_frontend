@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Product, useProducts } from "@/context/ProductContext";
 import { IoIosCloseCircle } from "react-icons/io";
+import ProductLoading from "./ProductLoading";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -12,6 +13,7 @@ export default function EditProductPage() {
   const id = params.id;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -27,8 +29,6 @@ export default function EditProductPage() {
     price: "",
     image: "",
   });
-  const [submitting, setSubmitting] = useState(false);
-
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -154,7 +154,9 @@ export default function EditProductPage() {
       return;
     }
 
-    setSubmitting(true);
+    setLoading(true);
+    setError("");
+    setIsSuccess(false);
     try {
       const form = new FormData();
       form.append("title", formData.title);
@@ -164,13 +166,21 @@ export default function EditProductPage() {
       if (file) form.append("image", file);
 
       await updateProduct(id, form);
-      router.push("/products");
-      router.refresh(); // Refresh the page to see updated data
+      setIsSuccess(true);
+      setLoading(false);
+
+      setTimeout(() => {
+        router.push("/products");
+        router.refresh();
+      }, 2000);
     } catch (err) {
       setError("Failed to update product");
       console.error(err);
+      setIsSuccess(false);
     } finally {
-      setSubmitting(false);
+      if (!isSuccess) {
+      setLoading(false);
+    }
     }
   };
 
@@ -181,7 +191,7 @@ export default function EditProductPage() {
     setErrors((prev) => ({ ...prev, image: "Image is required" }));
   };
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  // if (loading) return <div className="text-center py-8">Loading...</div>;
   if (error)
     return <div className="text-center py-8 text-red-500">{error}</div>;
   if (!product)
@@ -190,6 +200,9 @@ export default function EditProductPage() {
   return (
     <div className="container border border-gray-500 rounded-2xl shadow-sm mx-auto px-8 py-8 max-w-4xl">
       <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
+
+      {/* Show loading/success overlay */}
+      <ProductLoading isLoading={loading} isSuccess={isSuccess} />
 
       {error && (
         <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
@@ -301,19 +314,19 @@ export default function EditProductPage() {
             </div>
           ) : (
             <>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              // value={formData.image}
-              onChange={handleImageUpload}
-              // placeholder="Enter image URL"
-              className="mt-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
-            />
-            {errors.image && (
+              <input
+                type="file"
+                id="image"
+                name="image"
+                // value={formData.image}
+                onChange={handleImageUpload}
+                // placeholder="Enter image URL"
+                className="mt-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+              />
+              {errors.image && (
                 <p className="mt-1 text-sm text-red-600">{errors.image}</p>
               )}
-              </>
+            </>
           )}
         </div>
 
@@ -327,10 +340,7 @@ export default function EditProductPage() {
           </button>
           <button
             type="submit"
-            disabled={submitting}
-            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-600 ${
-              submitting ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-600`}
           >
             Update
           </button>
