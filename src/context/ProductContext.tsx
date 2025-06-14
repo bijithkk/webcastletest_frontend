@@ -37,7 +37,7 @@ interface ProductContextType {
   error: string | null;
   pagination: Pagination;
   filters: Filters;
-  fetchProducts: () => Promise<void>;
+  fetchProducts: (page?: number) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   updateFilter: (key: keyof Filters, value: string) => void;
   fetchCategories: () => Promise<void>;
