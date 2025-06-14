@@ -44,7 +44,7 @@ export default function EditProductPage() {
           image: response.data.product.image,
         });
       } catch (err) {
-        setError("Failed to fetch product");
+        // setError("Failed to fetch product");
         console.error(err);
       } finally {
         setLoading(false);
