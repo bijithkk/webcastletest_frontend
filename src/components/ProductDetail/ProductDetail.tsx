@@ -1,25 +1,20 @@
-// src/components/ProductDetail/ProductDetail.tsx
 "use client";
 
 import { Product, useProducts } from "@/context/ProductContext";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import ConfirmDialog from "../ConfirmDialog";
 import EditButton from "../buttons/EditButton";
 import DeleteButton from "../buttons/DeleteButton";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
   const { deleteProduct } = useProducts();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const handleDelete = async () => {
     try {
-      await deleteProduct(product._id);
       router.push("/products");
-      router.refresh(); // Refresh the page to see updated product list
+      router.refresh(); 
+      await deleteProduct(product._id);
+      
     } catch (error) {
       console.error("Failed to delete product:", error);
     }
@@ -51,7 +46,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
           <div className="flex space-x-4">
             <EditButton href={`/products/edit/${product._id}`} />
-            <DeleteButton onDelete={handleDelete} isLoading={isDeleting} />
+            <DeleteButton onDelete={handleDelete} />
           </div>
 
         </div>
