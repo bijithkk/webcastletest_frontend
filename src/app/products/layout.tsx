@@ -48,7 +48,7 @@ export default function ProductsLayout({
       <div className="flex flex-1 flex-col sm:flex-row gap-1 sm:gap-10">
         {/* Filters sidebar - only on /products route */}
         {pathname === "/products" && (
-          <div className="min-w-60 p-6">
+          <div className="min-w-60 p-3">
             <ProductFilters
               categories={categories}
               selectedCategories={selectedCategories}
