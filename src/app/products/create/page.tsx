@@ -101,7 +101,7 @@ export default function NewProductPage() {
       form.append("category", formData.category);
       if (file) form.append("image", file);
 
-      const response = await axios.post("http://localhost:3002/api/v1/product/add", form, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/add`, form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

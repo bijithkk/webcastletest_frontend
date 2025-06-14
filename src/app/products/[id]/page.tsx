@@ -27,7 +27,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:3002/api/v1/product/get/${id}`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get/${id}`)
         if (!response.data.product) {
           throw new Error('Product not found') // Will be caught by error boundary
         }
